@@ -107,6 +107,7 @@ restore_error_handler();
                                     <th scope="col">Description</th>
                                     <th scope="col">Niveau</th>
                                     <th scope="col">Vote</th>
+                                    <th scope="col">Participants</th>
                                     <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
@@ -146,6 +147,17 @@ restore_error_handler();
                                                 <span class="badge bg-<?php print($classvote); ?>">
                                                     <?php print($value->totalVotes) ?>
                                                 </span>
+                                            </td>
+                                            <td>
+                                                <ul>
+                                                    <?php
+                                                    foreach ($proposal->owners as $oneUser) {
+                                                        print("<li>");
+                                                        print($oneUser->username);
+                                                        print("</li>");
+                                                    }
+                                                    ?>
+                                                </ul>
                                             </td>
                                             <td>
                                                 <form class="d-flex" action="#" method="post">
