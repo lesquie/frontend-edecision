@@ -9,7 +9,7 @@ set_error_handler(
 // TRAITEMENT
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-      $url = 'http://192.168.43.65:4000/login';
+      $url = 'http://host.docker.internal:4000/login';
       $data = array('password' => $_POST["password"], 'username' => $_POST["username"]);
       $options = array(
           'http' => array(

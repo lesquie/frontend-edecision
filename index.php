@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if( isset($_POST["voteYes"]) ){
         try {
             $proposalId = $_POST["voteYes"];
-            $request = file_get_contents("http://192.168.43.65:4000/proposal/$proposalId/$userId/yes");
+            $request = file_get_contents("http://host.docker.internal:4000/proposal/$proposalId/$userId/yes");
             $_SESSION["success"][] = "La vote a été soumis avec succès";
             header('Location: index.php');
             exit();
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if( isset($_POST["unvote"]) ){
         try {
             $proposalId = $_POST["unvote"];
-            $request = file_get_contents("http://192.168.43.65:4000/proposal/$proposalId/$userId/undetermined");
+            $request = file_get_contents("http://host.docker.internal:4000/proposal/$proposalId/$userId/undetermined");
             $_SESSION["success"][] = "La vote a été soumis avec succès";
             header('Location: index.php');
             exit();
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if( isset($_POST["voteNo"]) ){
         try {
             $proposalId = $_POST["voteNo"];
-            $request = file_get_contents("http://192.168.43.65:4000/proposal/$proposalId/$userId/no");
+            $request = file_get_contents("http://host.docker.internal:4000/proposal/$proposalId/$userId/no");
             $_SESSION["success"][] = "La vote a été soumis avec succès";
             header('Location: index.php');
             exit();
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // GET PROPOSALS
 try {
-    $request = file_get_contents('http://192.168.43.65:4000/proposals');
+    $request = file_get_contents('http://host.docker.internal:4000/proposals');
     $jsonProposals = json_decode($request);
 } catch (Exception $e) {
     // echo $e->getMessage();

@@ -7,23 +7,45 @@ set_error_handler(
   }
 );
 
+// GET USERS
+try {
+    $request = file_get_contents('http://host.docker.internal:4000/users');
+    $jsonUsers = json_decode($request);
+} catch (Exception $e) {
+    // echo $e->getMessage();
+    print("Une erreur serveur est survenu, merci d'actualiser la page");
+    die();
+}
+
 // TRAITEMENT
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-      $url = 'http://192.168.43.65:4000/addProposal';
+      $url = 'http://host.docker.internal:4000/addProposal';
+      
+      $selectedUsers = [];
+            
+      foreach($jsonUsers as $user) {
+        foreach($_POST["owners"] as $username) {
+            if($username == $user->username) {
+                array_push($selectedUsers, $user);
+            }
+        }
+      }
+
       $data = array(
-          'title' => htmlentities($_POST["titre"]), 
-          'description' => htmlentities($_POST["description"]),
-          'closingDate' => $_POST["date_limite"],
-          'publicationLevel' => $_POST["level"]
-        );
+        'title' => htmlentities($_POST["titre"]), 
+        'description' => htmlentities($_POST["description"]),
+        'closingDate' => $_POST["date_limite"],
+        'publicationLevel' => $_POST["level"],
+        'owners' => $selectedUsers
+      );
 
       $options = array(
           'http' => array(
               'header'  => "Content-type: application/json",
               'method'  => 'POST',
               'content' => json_encode($data)
-          )
+           )
       );
       $context  = stream_context_create($options);
       $result = file_get_contents($url, false, $context);
@@ -37,16 +59,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: create_prop.php');
         exit();
   }
-}
-
-// GET USERS
-try {
-    $request = file_get_contents('http://192.168.43.65:4000/users');
-    $jsonUsers = json_decode($request);
-} catch (Exception $e) {
-    // echo $e->getMessage();
-    print("Une erreur serveur est survenu, merci d'actualiser la page");
-    die();
 }
 
 restore_error_handler();
@@ -104,23 +116,21 @@ restore_error_handler();
                 </div>
             </div>
 
-            <!-- <div class="row mb-3">
+            <div class="row mb-3">
                 <label class="col-sm-2 col-form-label"><span class="text-danger small pt-1 fw-bold">*</span>Participants</label>
                 <div class="col-sm-10">
                 <select class="form-select" multiple="" name="owners[]" required>
                     <?php
-                    // foreach ($jsonUsers as $oneUser) {
-                    //     $idUser = $oneUser->userId;
-                    //     $usernameUser = $oneUser->username;
-                    //     $userEncoded = json_encode($oneUser);
-                    //     print("<option value='$idUser'>$usernameUser</option>");
-                    // }
+                    foreach ($jsonUsers as $oneUser) {
+                        $usernameUser = $oneUser->username;
+                        print("<option value='$usernameUser'>$usernameUser</option>");
+                    }
                     ?>
 
                 </select>
                 <div class="invalid-feedback">Les participants sont obligatoires</div>
                 </div>
-            </div> -->
+            </div>
 
             <div class="row mb-3">
                 <label class="col-sm-2 col-form-label"></label>
